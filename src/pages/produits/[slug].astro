@@ -46,7 +46,7 @@ const related = products
 
         <p class="product__stock">
           <span class="product__dot" aria-hidden="true"></span>
-          En stock — expédition sous 24 h
+          En stock, expédition sous 24 h
         </p>
 
         <form class="product__form" data-add-form data-slug={product.slug}>
@@ -59,11 +59,6 @@ const related = products
         </form>
 
         <p class="product__feedback" data-feedback role="status" aria-live="polite"></p>
-
-        <div class="product__description">
-          <h2 class="product__subtitle">Description</h2>
-          <p>{product.description}</p>
-        </div>
       </div>
     </div>
 
@@ -255,23 +250,6 @@ const related = products
     background: var(--accent);
     display: inline-block;
     padding: 0.4em 0.7em;
-  }
-
-  .product__description {
-    margin-top: 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 3px solid var(--black);
-  }
-
-  .product__subtitle {
-    margin: 0 0 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .product__description p {
-    margin: 0;
-    max-width: 60ch;
-    line-height: 1.7;
   }
 
   .related {

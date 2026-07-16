@@ -11,8 +11,6 @@ const isActive = (href: string) => Astro.url.pathname.replace(/\/$/, '') === hre
 ---
 
 <header class="header">
-  <div class="header__banner stripes" aria-hidden="true"></div>
-
   <div class="page header__bar">
     <a href={path('/')} class="header__logo" aria-label="Accueil de la boutique">
       <Logo size="1.1rem" />
@@ -73,10 +71,6 @@ const isActive = (href: string) => Astro.url.pathname.replace(/\/$/, '') === hre
     z-index: 20;
     background: var(--white);
     border-bottom: 3px solid var(--black);
-  }
-
-  .header__banner {
-    height: 8px;
   }
 
   .header__bar {
