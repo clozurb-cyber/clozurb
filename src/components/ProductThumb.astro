@@ -1,0 +1,51 @@
+---
+import type { Product } from '../data/products';
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+
+const tilt = (product.slug.charCodeAt(0) % 7) - 3;
+---
+
+<div class="thumb" style={`--tilt: ${tilt}deg`}>
+  <div class="thumb__stripes stripes" aria-hidden="true"></div>
+  <span class="thumb__emoji" role="img" aria-label={product.name}>{product.emoji}</span>
+</div>
+
+<style>
+  .thumb {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--black);
+    border-bottom: 3px solid var(--black);
+  }
+
+  .thumb__stripes {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.3s ease;
+  }
+
+  .thumb__emoji {
+    position: relative;
+    font-size: clamp(3rem, 8vw, 4.5rem);
+    line-height: 1;
+    transform: rotate(var(--tilt));
+    filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.55));
+    transition: transform 0.3s ease;
+  }
+
+  :global(.card:hover) .thumb__stripes {
+    transform: translateX(calc(var(--stripe-width) * 3 * 1.4142));
+  }
+
+  :global(.card:hover) .thumb__emoji {
+    transform: rotate(calc(var(--tilt) * -1)) scale(1.15);
+  }
+</style>

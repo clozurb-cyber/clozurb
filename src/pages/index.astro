@@ -1,0 +1,137 @@
+---
+import Base from '../layouts/Base.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { CATEGORIES, products } from '../data/products';
+
+const byCategory = CATEGORIES.map((category) => ({
+  category,
+  items: products.filter((product) => product.category === category),
+})).filter(({ items }) => items.length > 0);
+---
+
+<Base title="Boutique">
+  <section class="hero">
+    <div class="page hero__inner">
+      <p class="hero__kicker">Boutique officielle · Lyon · Depuis 2007</p>
+      <h1 class="hero__title">
+        Tout ce qu'il faut pour faire<br />
+        <span class="hero__highlight">beaucoup trop de bruit</span>
+      </h1>
+      <p class="hero__lede">
+        Instruments, accessoires, prestations et quelques articles plus difficiles à classer.
+        Livraison assurée par nos propres moyens, c'est-à-dire à pied, en jouant.
+      </p>
+      <a class="btn btn--accent" href="#catalogue">Voir les {products.length} produits</a>
+    </div>
+    <div class="hero__stripes stripes" aria-hidden="true"></div>
+  </section>
+
+  <div class="page" id="catalogue">
+    {
+      byCategory.map(({ category, items }) => (
+        <section class="section">
+          <h2 class="section__title">{category}</h2>
+          <div class="grid">
+            {items.map((product) => (
+              <ProductCard product={product} />
+            ))}
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--black);
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    position: relative;
+    z-index: 1;
+    padding-block: clamp(2.5rem, 9vw, 6rem);
+    max-width: 60ch;
+    margin-inline: 0;
+    padding-left: max(var(--gutter), calc((100vw - var(--page-max)) / 2 + var(--gutter)));
+  }
+
+  .hero__kicker {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+  }
+
+  .hero__title {
+    margin: 0 0 1.5rem;
+  }
+
+  .hero__highlight {
+    background: var(--accent);
+    color: var(--black);
+    padding: 0.05em 0.25em;
+    display: inline-block;
+    transform: rotate(-1deg);
+  }
+
+  .hero__lede {
+    margin: 0 0 2rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    color: var(--grey-300);
+    max-width: 48ch;
+  }
+
+  .hero__stripes {
+    position: absolute;
+    inset: auto 0 0 0;
+    width: 100%;
+    height: 14px;
+  }
+
+  @media (min-width: 54em) {
+    .hero__stripes {
+      inset: 0 0 0 auto;
+      width: 45%;
+      height: auto;
+      clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+
+  .section {
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 40em) {
+    .section {
+      margin-top: 4rem;
+    }
+  }
+
+  .section__title {
+    display: inline-block;
+    margin: 0 0 1.5rem;
+    padding: 0.4em 0.8em;
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 148px), 1fr));
+    gap: clamp(0.75rem, 2.5vw, 1.75rem);
+  }
+
+  @media (min-width: 40em) {
+    .grid {
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    }
+  }
+</style>

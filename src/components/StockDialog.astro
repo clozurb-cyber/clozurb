@@ -1,0 +1,191 @@
+---
+---
+
+<dialog class="stock" data-stock-dialog aria-labelledby="stock-title">
+  <div class="stock__banner stripes" aria-hidden="true"></div>
+
+  <div class="stock__body">
+    <p class="stock__kicker">Traitement de votre commande</p>
+    <h2 class="stock__title" id="stock-title">Rupture<br />de stock</h2>
+
+    <p class="stock__lede">
+      Nous sommes au regret de vous informer que l'intégralité de votre panier est indisponible.
+    </p>
+
+    <ul class="stock__lines" data-stock-lines></ul>
+
+    <p class="stock__note">
+      Nos produits sont victimes de leur succès. Enfin, « succès ». Disons qu'ils n'ont jamais
+      vraiment existé, et que ça complique la logistique.
+    </p>
+
+    <p class="stock__note stock__note--strong">
+      Votre choix a bien été enregistré, lui. On sait maintenant ce qui vous fait envie, et c'était
+      un peu l'idée depuis le début.
+    </p>
+
+    <div class="stock__actions">
+      <a class="btn btn--accent" href="https://www.leszurbamateurs.com">Voir le vrai site</a>
+      <button class="stock__dismiss" type="button" data-stock-close>
+        Vider le panier et repartir dignement
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .stock {
+    width: min(560px, calc(100vw - 1.5rem));
+    max-height: calc(100dvh - 1.5rem);
+    padding: 0;
+    border: 3px solid var(--black);
+    box-shadow: 8px 8px 0 var(--red);
+    background: var(--white);
+  }
+
+  @media (min-width: 40em) {
+    .stock {
+      box-shadow: 12px 12px 0 var(--red);
+    }
+  }
+
+  .stock::backdrop {
+    background: rgba(0, 0, 0, 0.75);
+  }
+
+  .stock[open] {
+    animation: slam 0.3s cubic-bezier(0.2, 1.4, 0.4, 1);
+  }
+
+  @keyframes slam {
+    from {
+      transform: scale(1.6) rotate(-4deg);
+      opacity: 0;
+    }
+  }
+
+  .stock__banner {
+    height: 14px;
+  }
+
+  .stock__body {
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .stock__kicker {
+    margin: 0 0 0.5rem;
+    font-family: var(--font-title);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--grey-600);
+  }
+
+  .stock__title {
+    margin: 0 0 1rem;
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: var(--red);
+  }
+
+  .stock__lede {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.05rem;
+  }
+
+  .stock__lines {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--grey-300);
+  }
+
+  .stock__lines :global(li) {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--grey-300);
+    font-size: 0.9rem;
+    opacity: 0;
+    animation: strike 0.4s ease forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  .stock__lines :global(li span:last-child) {
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--red);
+    white-space: nowrap;
+  }
+
+  @keyframes strike {
+    from {
+      opacity: 0;
+      transform: translateX(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      text-decoration: line-through;
+      text-decoration-color: var(--red);
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  .stock__note {
+    margin: 0 0 0.85rem;
+    font-size: 0.9rem;
+    color: var(--grey-800);
+  }
+
+  .stock__note--strong {
+    background: var(--accent);
+    padding: 0.7em 0.85em;
+    color: var(--black);
+  }
+
+  .stock__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .stock__actions .btn {
+    text-align: center;
+    min-height: 48px;
+  }
+
+  @media (min-width: 34em) {
+    .stock__actions {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .stock__actions .btn {
+      flex: none;
+    }
+  }
+
+  .stock__dismiss {
+    padding: 0.5em 0;
+    min-height: 44px;
+    border: 0;
+    background: none;
+    color: var(--grey-600);
+    font-family: inherit;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .stock__dismiss:hover {
+    color: var(--black);
+  }
+</style>

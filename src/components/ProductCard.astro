@@ -1,0 +1,142 @@
+---
+import type { Product } from '../data/products';
+import { formatPrice } from '../data/products';
+import { productPath } from '../lib/paths';
+import ProductThumb from './ProductThumb.astro';
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+---
+
+<article class="card">
+  <a class="card__link" href={productPath(product.slug)}>
+    <ProductThumb product={product} />
+
+    <div class="card__body">
+      <span class="card__category">{product.category}</span>
+      <h3 class="card__name">{product.name}</h3>
+      <p class="card__tagline">{product.tagline}</p>
+
+      <div class="card__footer">
+        <span class="price">{formatPrice(product.price)}</span>
+        <span class="card__cta">Voir</span>
+      </div>
+    </div>
+  </a>
+</article>
+
+<style>
+  .card {
+    border: 3px solid var(--black);
+    background: var(--white);
+    box-shadow: var(--shadow-hard);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 var(--red);
+  }
+
+  .card:has(.card__link:focus-visible) {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card__link:focus-visible {
+    outline: none;
+  }
+
+  .card__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.4rem;
+    padding: 0.7rem;
+  }
+
+  @media (min-width: 40em) {
+    .card__body {
+      gap: 0.5rem;
+      padding: 1rem;
+    }
+  }
+
+  .card__category {
+    font-family: var(--font-title);
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--grey-600);
+  }
+
+  .card__name {
+    margin: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  .card__tagline {
+    flex: 1;
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    color: var(--grey-800);
+  }
+
+  @media (min-width: 40em) {
+    .card__name {
+      font-size: 0.95rem;
+      letter-spacing: 0.15em;
+    }
+
+    .card__tagline {
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+  }
+
+  .card__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .card__cta {
+    display: none;
+    font-family: var(--font-title);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--red);
+  }
+
+  @media (min-width: 40em) {
+    .card__cta {
+      display: inline;
+    }
+  }
+
+  .card:hover .card__cta::after {
+    content: ' →';
+  }
+</style>

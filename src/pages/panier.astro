@@ -1,0 +1,447 @@
+---
+import Base from '../layouts/Base.astro';
+import StockDialog from '../components/StockDialog.astro';
+import { SECTIONS, SECTION_OTHER } from '../data/sections';
+import { path } from '../lib/paths';
+---
+
+<Base title="Panier">
+  <div class="page cart">
+    <h1 class="cart__title">Votre panier</h1>
+
+    <div class="cart__empty" data-cart-empty hidden>
+      <p>Votre panier est vide. C'est le seul état dans lequel il fonctionne parfaitement.</p>
+      <a class="btn" href={path('/')}>Retourner à la boutique</a>
+    </div>
+
+    <div class="cart__layout" data-cart-filled hidden>
+      <section class="cart__lines" aria-label="Articles du panier">
+        <ul class="lines" data-cart-lines></ul>
+
+        <p class="cart__total">
+          Total <span class="price" data-cart-total></span>
+        </p>
+      </section>
+
+      <section class="checkout" aria-labelledby="checkout-title">
+        <h2 class="checkout__title" id="checkout-title">Finaliser</h2>
+
+        <form class="checkout__form" data-checkout-form>
+          <label class="field">
+            <span class="field__label">Votre nom</span>
+            <input
+              class="field__input"
+              type="text"
+              name="customer"
+              required
+              maxlength="60"
+              autocomplete="name"
+              placeholder="Prénom, surnom, sobriquet…"
+            />
+          </label>
+
+          <label class="field">
+            <span class="field__label">Votre pupitre</span>
+            <select class="field__input" name="section" required data-section-select>
+              <option value="" disabled selected>Choisissez…</option>
+              {SECTIONS.map((section) => <option value={section}>{section}</option>)}
+              <option value={SECTION_OTHER}>Autre…</option>
+            </select>
+          </label>
+
+          <label class="field" data-section-other hidden>
+            <span class="field__label">Précisez</span>
+            <input
+              class="field__input"
+              type="text"
+              name="sectionOther"
+              maxlength="40"
+              placeholder="La buvette, le camion, personne…"
+            />
+          </label>
+
+          <button class="btn checkout__submit" type="submit" data-checkout-submit>
+            Valider ma commande
+          </button>
+
+          <p class="checkout__reassurance">
+            Paiement sécurisé · Livraison à pied · Satisfait ou remboursé en applaudissements
+          </p>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <StockDialog />
+</Base>
+
+<script>
+  import { clear, read, subscribe, setQuantity, remove, type CartLine } from '../scripts/cart';
+  import { findProduct, formatPrice, type Product } from '../data/products';
+  import { newOrderId, submitOrder, type OrderLine } from '../scripts/order';
+  import { SECTION_OTHER } from '../data/sections';
+  import { productPath } from '../lib/paths';
+
+  const CHECK_DELAY_MS = 1400;
+  const CASCADE_STEP_MS = 110;
+
+  const emptyState = document.querySelector<HTMLElement>('[data-cart-empty]');
+  const filledState = document.querySelector<HTMLElement>('[data-cart-filled]');
+  const list = document.querySelector<HTMLUListElement>('[data-cart-lines]');
+  const totalEl = document.querySelector<HTMLElement>('[data-cart-total]');
+  const form = document.querySelector<HTMLFormElement>('[data-checkout-form]');
+  const submit = document.querySelector<HTMLButtonElement>('[data-checkout-submit]');
+  const sectionSelect = document.querySelector<HTMLSelectElement>('[data-section-select]');
+  const sectionOther = document.querySelector<HTMLElement>('[data-section-other]');
+  const dialog = document.querySelector<HTMLDialogElement>('[data-stock-dialog]');
+  const dialogLines = document.querySelector<HTMLUListElement>('[data-stock-lines]');
+  const dialogClose = document.querySelector<HTMLButtonElement>('[data-stock-close]');
+
+  type ResolvedLine = CartLine & { product: Product };
+
+  const resolve = (lines: CartLine[]): ResolvedLine[] =>
+    lines.flatMap((line) => {
+      const product = findProduct(line.slug);
+      return product ? [{ ...line, product }] : [];
+    });
+
+  const renderLine = ({ product, quantity }: ResolvedLine): HTMLLIElement => {
+    const item = document.createElement('li');
+    item.className = 'line';
+
+    const thumb = document.createElement('span');
+    thumb.className = 'line__emoji';
+    thumb.setAttribute('aria-hidden', 'true');
+    thumb.textContent = product.emoji;
+
+    const body = document.createElement('div');
+    body.className = 'line__body';
+
+    const name = document.createElement('a');
+    name.className = 'line__name';
+    name.href = productPath(product.slug);
+    name.textContent = product.name;
+
+    const price = document.createElement('span');
+    price.className = 'line__price';
+    price.textContent = formatPrice(product.price);
+
+    body.append(name, price);
+
+    const qty = document.createElement('input');
+    qty.className = 'line__qty';
+    qty.type = 'number';
+    qty.min = '1';
+    qty.max = '99';
+    qty.step = '1';
+    qty.value = String(quantity);
+    qty.setAttribute('aria-label', `Quantité pour ${product.name}`);
+    qty.addEventListener('change', () => setQuantity(product.slug, Number(qty.value)));
+
+    const del = document.createElement('button');
+    del.className = 'line__remove';
+    del.type = 'button';
+    del.textContent = '×';
+    del.setAttribute('aria-label', `Retirer ${product.name}`);
+    del.addEventListener('click', () => remove(product.slug));
+
+    item.append(thumb, body, qty, del);
+    return item;
+  };
+
+  const render = (lines: CartLine[]) => {
+    const resolved = resolve(lines);
+    const isEmpty = resolved.length === 0;
+
+    if (emptyState) emptyState.hidden = !isEmpty;
+    if (filledState) filledState.hidden = isEmpty;
+    if (!list || !totalEl) return;
+
+    list.replaceChildren(...resolved.map(renderLine));
+
+    const total = resolved.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
+    totalEl.textContent = formatPrice(total);
+  };
+
+  sectionSelect?.addEventListener('change', () => {
+    if (!sectionOther) return;
+
+    const isOther = sectionSelect.value === SECTION_OTHER;
+    sectionOther.hidden = !isOther;
+
+    const input = sectionOther.querySelector('input');
+    if (!input) return;
+
+    input.required = isOther;
+    if (isOther) input.focus();
+  });
+
+  const revealDialog = (lines: ResolvedLine[]) => {
+    if (!dialogLines || !dialog) return;
+
+    dialogLines.replaceChildren(
+      ...lines.map((line, index) => {
+        const item = document.createElement('li');
+        item.style.setProperty('--delay', `${index * CASCADE_STEP_MS}ms`);
+
+        const label = document.createElement('span');
+        label.textContent = `${line.product.name} × ${line.quantity}`;
+
+        const status = document.createElement('span');
+        status.textContent = 'Épuisé';
+
+        item.append(label, status);
+        return item;
+      }),
+    );
+
+    dialog.showModal();
+  };
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const lines = resolve(read());
+    if (lines.length === 0 || !submit) return;
+
+    const data = new FormData(form);
+    const rawSection = String(data.get('section') ?? '');
+    const section =
+      rawSection === SECTION_OTHER ? String(data.get('sectionOther') ?? '').trim() : rawSection;
+
+    submit.disabled = true;
+    submit.dataset.loading = '';
+    submit.textContent = 'Vérification des stocks…';
+
+    const orderLines: OrderLine[] = lines.map(({ product, quantity }) => ({
+      slug: product.slug,
+      name: product.name,
+      quantity,
+      price: product.price,
+    }));
+
+    const tracking = submitOrder({
+      id: newOrderId(),
+      customer: String(data.get('customer') ?? '').trim(),
+      section: section || 'Non précisé',
+      lines: orderLines,
+    });
+
+    await Promise.all([tracking, new Promise((done) => setTimeout(done, CHECK_DELAY_MS))]);
+
+    submit.disabled = false;
+    delete submit.dataset.loading;
+    submit.textContent = 'Valider ma commande';
+
+    revealDialog(lines);
+  });
+
+  dialogClose?.addEventListener('click', () => {
+    clear();
+    dialog?.close();
+  });
+
+  subscribe(render);
+</script>
+
+<style>
+  .cart {
+    padding-block: 2.5rem;
+  }
+
+  .cart__title {
+    margin: 0 0 2rem;
+  }
+
+  .cart__empty p {
+    margin: 0 0 1.75rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    max-width: 45ch;
+  }
+
+  .cart__layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  @media (min-width: 54em) {
+    .cart__layout {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    }
+  }
+
+  .lines {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 3px solid var(--black);
+  }
+
+  .lines :global(.line) {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--grey-300);
+  }
+
+  @media (min-width: 30em) {
+    .lines :global(.line) {
+      gap: 1rem;
+      padding: 1rem 0;
+    }
+  }
+
+  .lines :global(.line__emoji) {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--black);
+    font-size: 1.25rem;
+  }
+
+  @media (min-width: 30em) {
+    .lines :global(.line__emoji) {
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.5rem;
+    }
+  }
+
+  .lines :global(.line__body) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .lines :global(.line__name) {
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--black);
+    text-decoration: none;
+  }
+
+  .lines :global(.line__name:hover) {
+    color: var(--red);
+  }
+
+  .lines :global(.line__price) {
+    font-size: 0.85rem;
+    color: var(--grey-600);
+  }
+
+  .lines :global(.line__qty) {
+    width: 3.5rem;
+    min-height: 44px;
+    padding: 0.5em;
+    border: 2px solid var(--black);
+    font-family: var(--font-title);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .lines :global(.line__remove) {
+    width: 44px;
+    height: 44px;
+    border: 2px solid var(--grey-300);
+    background: none;
+    color: var(--grey-600);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .lines :global(.line__remove:hover) {
+    border-color: var(--red);
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .cart__total {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin: 1.5rem 0 0;
+    font-family: var(--font-title);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+
+  .checkout {
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-hard);
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    background: var(--grey-100);
+  }
+
+  @media (min-width: 54em) {
+    .checkout {
+      position: sticky;
+      top: 6rem;
+    }
+  }
+
+  .checkout__title {
+    margin: 0 0 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .checkout__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .field__label {
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .field__input {
+    min-height: 44px;
+    padding: 0.75em;
+    border: 3px solid var(--black);
+    background: var(--white);
+    font-family: inherit;
+    font-size: 1rem;
+  }
+
+  .checkout__submit {
+    margin-top: 0.5rem;
+    min-height: 48px;
+  }
+
+  .checkout__submit[data-loading] {
+    background: var(--grey-800);
+    cursor: progress;
+  }
+
+  .checkout__reassurance {
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--grey-600);
+    text-align: center;
+  }
+
+</style>

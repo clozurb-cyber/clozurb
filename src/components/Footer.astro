@@ -1,0 +1,103 @@
+---
+import Logo from './Logo.astro';
+import { path } from '../lib/paths';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__banner stripes" aria-hidden="true"></div>
+
+  <div class="page footer__content">
+    <div class="footer__brand">
+      <Logo size="1rem" />
+      <p class="footer__tagline">Vos oreilles vont en prendre plein les yeux.</p>
+    </div>
+
+    <nav class="footer__links" aria-label="Navigation de bas de page">
+      <a href={path('/')}>Boutique</a>
+      <a href="https://www.leszurbamateurs.com">Le vrai site</a>
+      <a href="https://www.leszurbamateurs.com/contact/">Nous booker</a>
+    </nav>
+  </div>
+
+  <div class="page footer__legal">
+    <p>
+      Ceci est une parodie. Aucun de ces produits n'existe, aucun n'est à vendre, et aucune commande
+      ne sera honorée. <a href="https://www.leszurbamateurs.com">Les Zurbamateurs</a>, eux, existent
+      vraiment — batucada, Lyon, depuis 2007.
+    </p>
+    <p>© {year} Les Zurbamateurs — Tous droits réservés, toutes tailles épuisées.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: 5rem;
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .footer__banner {
+    height: 8px;
+  }
+
+  .footer__content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    padding-block: 2.5rem 1.5rem;
+  }
+
+  .footer__tagline {
+    margin: 0.9rem 0 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--grey-300);
+  }
+
+  .footer__links {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .footer__links a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--white);
+    font-family: var(--font-title);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+  }
+
+  .footer__links a:hover {
+    color: var(--accent);
+  }
+
+  .footer__legal {
+    padding-top: 1.5rem;
+    padding-bottom: 2.5rem;
+    border-top: 1px solid var(--grey-800);
+    color: var(--grey-600);
+    font-size: 0.8rem;
+  }
+
+  .footer__legal p {
+    margin: 0 0 0.5rem;
+    max-width: 65ch;
+  }
+
+  .footer__legal a {
+    color: var(--grey-300);
+  }
+
+  .footer__legal a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProductThumb from '../../components/ProductThumb.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import { formatPrice, products, type Product } from '../../data/products';
+import { path } from '../../lib/paths';
+
+export const getStaticPaths = () =>
+  products.map((product) => ({
+    params: { slug: product.slug },
+    props: { product },
+  }));
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+
+const related = products
+  .filter((item) => item.category === product.category && item.slug !== product.slug)
+  .slice(0, 4);
+---
+
+<Base title={product.name} description={product.tagline}>
+  <div class="page">
+    <nav class="crumbs" aria-label="Fil d'Ariane">
+      <a href={path('/')}>Boutique</a>
+      <span aria-hidden="true">/</span>
+      <a href={path('/#catalogue')}>{product.category}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{product.name}</span>
+    </nav>
+
+    <div class="product">
+      <div class="product__media card">
+        <ProductThumb product={product} />
+      </div>
+
+      <div class="product__info">
+        <span class="product__category">{product.category}</span>
+        <h1 class="product__name">{product.name}</h1>
+        <p class="product__tagline">{product.tagline}</p>
+
+        <p class="product__price"><span class="price">{formatPrice(product.price)}</span></p>
+
+        <p class="product__stock">
+          <span class="product__dot" aria-hidden="true"></span>
+          En stock — expédition sous 24 h
+        </p>
+
+        <form class="product__form" data-add-form data-slug={product.slug}>
+          <label class="product__qty">
+            <span>Quantité</span>
+            <input type="number" name="quantity" value="1" min="1" max="99" step="1" />
+          </label>
+
+          <button class="btn" type="submit">Ajouter au panier</button>
+        </form>
+
+        <p class="product__feedback" data-feedback role="status" aria-live="polite"></p>
+
+        <div class="product__description">
+          <h2 class="product__subtitle">Description</h2>
+          <p>{product.description}</p>
+        </div>
+      </div>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="related">
+          <h2 class="related__title">Dans la même catégorie</h2>
+          <div class="related__grid">
+            {related.map((item) => (
+              <ProductCard product={item} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </div>
+</Base>
+
+<script>
+  import { add } from '../../scripts/cart';
+
+  const form = document.querySelector<HTMLFormElement>('[data-add-form]');
+  const feedback = document.querySelector<HTMLElement>('[data-feedback]');
+  const slug = form?.dataset.slug;
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!slug) return;
+
+    const input = form.elements.namedItem('quantity') as HTMLInputElement;
+    const quantity = Math.max(1, Math.trunc(Number(input.value) || 1));
+
+    add(slug, quantity);
+
+    if (feedback) {
+      feedback.textContent = `Ajouté au panier (${quantity}). Excellent choix, vraiment.`;
+      feedback.dataset.visible = '';
+    }
+  });
+</script>
+
+<style>
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-block: 0.75rem 1.25rem;
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--grey-600);
+  }
+
+  .crumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--grey-600);
+    text-decoration: none;
+  }
+
+  .crumbs a:hover {
+    color: var(--red);
+  }
+
+  .product {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+  }
+
+  @media (min-width: 45em) {
+    .product {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+  }
+
+  .product__media {
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-hard);
+  }
+
+  .product__category {
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--grey-600);
+  }
+
+  .product__name {
+    margin: 0.5rem 0 0.75rem;
+  }
+
+  .product__tagline {
+    margin: 0 0 1.5rem;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--grey-800);
+  }
+
+  .product__price {
+    margin: 0 0 1rem;
+  }
+
+  .product__stock {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1.5rem;
+    font-size: 0.85rem;
+    color: #1a7f37;
+  }
+
+  .product__dot {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: currentColor;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.25;
+    }
+  }
+
+  .product__form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 1rem;
+  }
+
+  .product__form .btn {
+    flex: 1;
+    min-width: 12rem;
+    min-height: 44px;
+  }
+
+  .product__qty {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .product__qty input {
+    width: 5rem;
+    min-height: 44px;
+    padding: 0.7em;
+    border: 3px solid var(--black);
+    font-family: var(--font-title);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .product__feedback {
+    margin: 1rem 0 0;
+    min-height: 1.5rem;
+    font-family: var(--font-title);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .product__feedback[data-visible] {
+    opacity: 1;
+    background: var(--accent);
+    display: inline-block;
+    padding: 0.4em 0.7em;
+  }
+
+  .product__description {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 3px solid var(--black);
+  }
+
+  .product__subtitle {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .product__description p {
+    margin: 0;
+    max-width: 60ch;
+    line-height: 1.7;
+  }
+
+  .related {
+    margin-top: 5rem;
+  }
+
+  .related__title {
+    display: inline-block;
+    margin: 0 0 1.5rem;
+    padding: 0.4em 0.8em;
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .related__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 148px), 1fr));
+    gap: clamp(0.75rem, 2.5vw, 1.75rem);
+  }
+
+  @media (min-width: 40em) {
+    .related__grid {
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+type Props = {
+  size?: string;
+};
+
+const { size = '1.5rem' } = Astro.props;
+---
+
+<span class="logo" style={`--logo-size: ${size}`}>
+  <span class="logo__stripes" aria-hidden="true"></span>
+  <span class="logo__text">les zurbamateurs<span class="logo__caret">_</span></span>
+</span>
+
+<style>
+  .logo {
+    position: relative;
+    display: inline-block;
+    padding: 0.5em 0.7em 0.35em;
+    background: var(--black);
+    font-size: var(--logo-size);
+    line-height: 1;
+    margin-top: 0.55em;
+  }
+
+  .logo__stripes {
+    position: absolute;
+    inset: -0.55em 0 auto 0;
+    height: 0.55em;
+    background-image: repeating-linear-gradient(
+      45deg,
+      var(--red) 0 0.42em,
+      transparent 0.42em 0.84em
+    );
+  }
+
+  .logo__text {
+    font-family: var(--font-title);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    text-transform: lowercase;
+    white-space: nowrap;
+  }
+
+  .logo__caret {
+    color: var(--accent);
+    animation: blink 1.2s steps(2, start) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
