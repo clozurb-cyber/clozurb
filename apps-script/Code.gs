@@ -8,8 +8,6 @@ const HEADERS = [
   'produit_slug',
   'produit_nom',
   'quantite',
-  'prix_unitaire',
-  'total_ligne',
 ];
 
 function getSheet() {
@@ -43,9 +41,6 @@ function doPost(e) {
 
     const timestamp = new Date();
     const rows = lines.map(function (line) {
-      const quantity = Number(line.quantity) || 0;
-      const price = Number(line.price) || 0;
-
       return [
         timestamp,
         String(order.id || ''),
@@ -53,9 +48,7 @@ function doPost(e) {
         String(order.section || ''),
         String(line.slug || ''),
         String(line.name || ''),
-        quantity,
-        price,
-        quantity * price,
+        Number(line.quantity) || 0,
       ];
     });
 

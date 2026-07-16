@@ -43,8 +43,10 @@ En local, copier `.env.example` vers `.env` et y mettre la même URL.
 L'onglet `Commandes` se crée tout seul à la première commande :
 
 ```
-horodatage | commande_id | nom | pupitre | produit_slug | produit_nom | quantite | prix_unitaire | total_ligne
+horodatage | commande_id | nom | pupitre | produit_slug | produit_nom | quantite
 ```
+
+Pas de prix : il vit dans `src/data/products.ts` et n'apporterait rien de plus ici.
 
 Une ligne par produit (et non par commande) : c'est ce qui rend le tableau croisé dynamique
 immédiat — produits en lignes, `pupitre` en colonnes, `SOMME(quantite)` en valeurs.

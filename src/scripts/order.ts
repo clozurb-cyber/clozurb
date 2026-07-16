@@ -4,7 +4,6 @@ export type OrderLine = {
   slug: string;
   name: string;
   quantity: number;
-  price: number;
 };
 
 export type Order = {
