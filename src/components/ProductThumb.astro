@@ -28,8 +28,8 @@ const tilt = (product.slug.charCodeAt(0) % 7) - 3;
 
   .thumb__stripes {
     position: absolute;
-    inset: 0;
-    transition: transform 0.3s ease;
+    inset: 0 -7rem;
+    transition: transform 0.35s ease;
   }
 
   .thumb__emoji {
@@ -38,7 +38,7 @@ const tilt = (product.slug.charCodeAt(0) % 7) - 3;
     line-height: 1;
     transform: rotate(var(--tilt));
     filter: drop-shadow(4px 4px 0 rgba(0, 0, 0, 0.55));
-    transition: transform 0.3s ease;
+    transition: transform 0.35s ease;
   }
 
   :global(.card:hover) .thumb__stripes {
@@ -46,6 +46,6 @@ const tilt = (product.slug.charCodeAt(0) % 7) - 3;
   }
 
   :global(.card:hover) .thumb__emoji {
-    transform: rotate(calc(var(--tilt) * -1)) scale(1.15);
+    transform: rotate(calc(var(--tilt) * -1)) scale(1.12);
   }
 </style>

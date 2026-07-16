@@ -11,17 +11,19 @@ const byCategory = CATEGORIES.map((category) => ({
 
 <Base title="Boutique">
   <section class="hero">
-    <div class="page hero__inner">
-      <p class="hero__kicker">Boutique officielle · Lyon · Depuis 2007</p>
-      <h1 class="hero__title">
-        Tout ce qu'il faut pour faire<br />
-        <span class="hero__highlight">beaucoup trop de bruit</span>
-      </h1>
-      <p class="hero__lede">
-        Instruments, accessoires, prestations et quelques articles plus difficiles à classer.
-        Livraison assurée par nos propres moyens, c'est-à-dire à pied, en jouant.
-      </p>
-      <a class="btn btn--accent" href="#catalogue">Voir les {products.length} produits</a>
+    <div class="hero__inner">
+      <div class="hero__content">
+        <p class="hero__kicker">Boutique officielle · Lyon · Depuis 2007</p>
+        <h1 class="hero__title">
+          Tout ce qu'il faut pour faire<br />
+          <span class="hero__highlight">beaucoup trop de bruit</span>
+        </h1>
+        <p class="hero__lede">
+          Instruments, accessoires, prestations et quelques articles plus difficiles à classer.
+          Livraison assurée par nos propres moyens, c'est-à-dire à pied, en jouant.
+        </p>
+        <a class="btn btn--accent" href="#catalogue">Voir les {products.length} produits</a>
+      </div>
     </div>
     <div class="hero__stripes stripes" aria-hidden="true"></div>
   </section>
@@ -54,9 +56,11 @@ const byCategory = CATEGORIES.map((category) => ({
     position: relative;
     z-index: 1;
     padding-block: clamp(2.5rem, 9vw, 6rem);
-    max-width: 60ch;
-    margin-inline: 0;
-    padding-left: max(var(--gutter), calc((100vw - var(--page-max)) / 2 + var(--gutter)));
+    padding-inline: var(--gutter);
+  }
+
+  .hero__content {
+    max-width: 34rem;
   }
 
   .hero__kicker {
@@ -97,11 +101,31 @@ const byCategory = CATEGORIES.map((category) => ({
   }
 
   @media (min-width: 54em) {
+    .hero {
+      display: grid;
+      grid-template-columns:
+        minmax(var(--gutter), 1fr)
+        minmax(0, calc((var(--page-max) - var(--gutter) * 2) * 0.56))
+        minmax(0, calc((var(--page-max) - var(--gutter) * 2) * 0.44))
+        minmax(0, 1fr);
+      align-items: stretch;
+    }
+
+    .hero__inner {
+      grid-column: 2;
+      padding-inline: 0 2.5rem;
+    }
+
+    .hero__content {
+      max-width: none;
+    }
+
     .hero__stripes {
-      inset: 0 0 0 auto;
-      width: 45%;
+      grid-column: 3 / -1;
+      position: static;
+      width: auto;
       height: auto;
-      clip-path: polygon(35% 0, 100% 0, 100% 100%, 0 100%);
+      clip-path: polygon(26% 0, 100% 0, 100% 100%, 0 100%);
     }
   }
 

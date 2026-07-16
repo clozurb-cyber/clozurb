@@ -63,6 +63,14 @@ const year = new Date().getFullYear();
     flex-direction: column;
   }
 
+  @media (min-width: 40em) {
+    .footer__links {
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+    }
+  }
+
   .footer__links a {
     display: flex;
     align-items: center;
