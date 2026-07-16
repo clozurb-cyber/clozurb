@@ -25,8 +25,7 @@
   background-image: repeating-linear-gradient(
     45deg,
     var(--red) 0 var(--stripe-width),
-    var(--black) var(--stripe-width) calc(var(--stripe-width) * 2),
-    var(--accent) calc(var(--stripe-width) * 2) calc(var(--stripe-width) * 3)
+    var(--black) var(--stripe-width) calc(var(--stripe-width) * 2)
   );
 }
 

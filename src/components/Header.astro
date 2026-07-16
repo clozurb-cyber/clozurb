@@ -77,14 +77,6 @@ const isActive = (href: string) => Astro.url.pathname.replace(/\/$/, '') === hre
 
   .header__banner {
     height: 8px;
-    background-size: calc(var(--stripe-width) * 3) calc(var(--stripe-width) * 3);
-    animation: scroll-stripes 3s linear infinite;
-  }
-
-  @keyframes scroll-stripes {
-    to {
-      background-position: calc(var(--stripe-width) * 3 * 1.4142) 0;
-    }
   }
 
   .header__bar {
