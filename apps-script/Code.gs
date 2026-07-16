@@ -1,3 +1,5 @@
+const VERSION = 'v2-sans-prix';
+
 const SHEET_NAME = 'Commandes';
 
 const HEADERS = [
@@ -65,5 +67,7 @@ function doPost(e) {
 }
 
 function doGet() {
-  return ContentService.createTextOutput('Les Zurbamateurs — endpoint de commandes. POST only.');
+  return ContentService.createTextOutput(
+    'Les Zurbamateurs — endpoint de commandes. POST only. ' + VERSION + ' — ' + HEADERS.join(','),
+  );
 }
