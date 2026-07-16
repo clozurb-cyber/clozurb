@@ -80,7 +80,7 @@ import { path } from '../lib/paths';
   import { findProduct, formatPrice, type Product } from '../data/products';
   import { newOrderId, submitOrder, type OrderLine } from '../scripts/order';
   import { SECTION_OTHER } from '../data/sections';
-  import { productPath } from '../lib/paths';
+  import { productPath, productImage } from '../lib/paths';
 
   const CHECK_DELAY_MS = 1400;
   const CASCADE_STEP_MS = 110;
@@ -109,10 +109,13 @@ import { path } from '../lib/paths';
     const item = document.createElement('li');
     item.className = 'line';
 
-    const thumb = document.createElement('span');
-    thumb.className = 'line__emoji';
-    thumb.setAttribute('aria-hidden', 'true');
-    thumb.textContent = product.emoji;
+    const thumb = document.createElement('img');
+    thumb.className = 'line__img';
+    thumb.src = productImage(product.image);
+    thumb.alt = '';
+    thumb.width = 48;
+    thumb.height = 48;
+    thumb.loading = 'lazy';
 
     const body = document.createElement('div');
     body.className = 'line__body';
@@ -295,20 +298,18 @@ import { path } from '../lib/paths';
     }
   }
 
-  .lines :global(.line__emoji) {
-    display: grid;
-    place-items: center;
+  .lines :global(.line__img) {
     width: 2.5rem;
     height: 2.5rem;
+    object-fit: cover;
     background: var(--black);
-    font-size: 1.25rem;
+    display: block;
   }
 
   @media (min-width: 30em) {
-    .lines :global(.line__emoji) {
+    .lines :global(.line__img) {
       width: 3rem;
       height: 3rem;
-      font-size: 1.5rem;
     }
   }
 
