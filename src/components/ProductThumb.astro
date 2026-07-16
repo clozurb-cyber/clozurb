@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import type { Product } from '../data/products';
+import { productImageAsset } from '../lib/images';
 import { productImage } from '../lib/paths';
 
 type Props = {
@@ -8,18 +10,35 @@ type Props = {
 };
 
 const { product, eager = false } = Astro.props;
+const asset = productImageAsset(product.image);
+const loading = eager ? 'eager' : 'lazy';
 ---
 
 <div class="thumb">
-  <img
-    class="thumb__img"
-    src={productImage(product.image)}
-    alt={product.image ? product.name : ''}
-    width="400"
-    height="300"
-    loading={eager ? 'eager' : 'lazy'}
-    decoding="async"
-  />
+  {
+    asset ? (
+      <Image
+        class="thumb__img"
+        src={asset}
+        alt={product.name}
+        widths={[240, 400, 800]}
+        sizes="(min-width: 40em) 400px, 50vw"
+        format="webp"
+        loading={loading}
+        decoding="async"
+      />
+    ) : (
+      <img
+        class="thumb__img"
+        src={productImage(null)}
+        alt=""
+        width="400"
+        height="300"
+        loading={loading}
+        decoding="async"
+      />
+    )
+  }
 </div>
 
 <style>

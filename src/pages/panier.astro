@@ -1,8 +1,19 @@
 ---
+import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import StockDialog from '../components/StockDialog.astro';
+import { products } from '../data/products';
 import { SECTIONS, SECTION_OTHER } from '../data/sections';
-import { path } from '../lib/paths';
+import { productImageAsset } from '../lib/images';
+import { path, productImage } from '../lib/paths';
+
+const thumbs: Record<string, string> = {};
+for (const product of products) {
+  const asset = productImageAsset(product.image);
+  thumbs[product.slug] = asset
+    ? (await getImage({ src: asset, width: 96, height: 96, fit: 'cover', format: 'webp' })).src
+    : productImage(null);
+}
 ---
 
 <Base title="Panier">
@@ -73,6 +84,8 @@ import { path } from '../lib/paths';
   </div>
 
   <StockDialog />
+
+  <script type="application/json" data-thumbs set:html={JSON.stringify(thumbs)} is:inline></script>
 </Base>
 
 <script>
@@ -80,7 +93,10 @@ import { path } from '../lib/paths';
   import { findProduct, formatPrice, type Product } from '../data/products';
   import { newOrderId, submitOrder, type OrderLine } from '../scripts/order';
   import { SECTION_OTHER } from '../data/sections';
-  import { productPath, productImage } from '../lib/paths';
+  import { productPath } from '../lib/paths';
+
+  const thumbsEl = document.querySelector<HTMLElement>('[data-thumbs]');
+  const thumbs: Record<string, string> = JSON.parse(thumbsEl?.textContent || '{}');
 
   const CHECK_DELAY_MS = 1400;
   const CASCADE_STEP_MS = 110;
@@ -111,7 +127,7 @@ import { path } from '../lib/paths';
 
     const thumb = document.createElement('img');
     thumb.className = 'line__img';
-    thumb.src = productImage(product.image);
+    thumb.src = thumbs[product.slug] ?? '';
     thumb.alt = '';
     thumb.width = 48;
     thumb.height = 48;

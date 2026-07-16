@@ -24,6 +24,24 @@ npm run dev
 Le catalogue vit dans `src/data/products.ts`, la liste des pupitres dans `src/data/sections.ts`.
 Ajouter un produit = ajouter un objet au tableau, sa page est générée automatiquement.
 
+## Ajouter les photos produit
+
+1. Déposer le fichier dans `src/assets/products/` (pas dans `public/`)
+2. Renseigner son nom dans `src/data/products.ts` : `image: 'surdo-22.jpg'`
+
+`image: null` affiche le placeholder, les deux cohabitent : les photos peuvent arriver une par une.
+
+**Inutile de préparer les images.** Astro les optimise au build : redimensionnement, conversion webp,
+`srcset` responsive, hash dans le nom. Un fichier brut de 662 Ko en 1600×1200 ressort en 10 Ko, et le
+navigateur télécharge la variante 400px sur la grille, 96px dans le panier.
+
+C'est bien pour ça que les photos vont dans `src/assets/` : ce qui est dans `public/` est servi tel
+quel, sans optimisation.
+
+Le panier est rendu côté client, où `<Image>` n'existe pas. `panier.astro` calcule donc les URLs
+optimisées au build via `getImage()` et les sérialise dans un `<script type="application/json">` que
+le JS relit. C'est la raison d'être de ce bloc.
+
 ## Brancher le Google Sheet
 
 Sans cette étape le site fonctionne, mais aucune commande n'est enregistrée.
