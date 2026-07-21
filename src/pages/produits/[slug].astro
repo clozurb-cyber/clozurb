@@ -41,8 +41,27 @@ const related = product.category
     </nav>
 
     <div class="product">
-      <div class="product__media card">
-        <ProductThumb product={product} eager />
+      <div class="product__media">
+        <div class="card">
+          <ProductThumb product={product} eager switchable />
+        </div>
+
+        {
+          product.variants && product.variants.length > 0 && (
+            <div class="swatches" data-swatches role="group" aria-label="Coloris">
+              {product.variants.map((variant, index) => (
+                <button
+                  type="button"
+                  class="swatch"
+                  data-index={index}
+                  aria-pressed={index === 0 ? 'true' : 'false'}
+                >
+                  {variant.label}
+                </button>
+              ))}
+            </div>
+          )
+        }
       </div>
 
       <div class="product__info">
@@ -106,6 +125,25 @@ const related = product.category
       feedback.dataset.visible = '';
     }
   });
+
+  const thumb = document.querySelector<HTMLElement>('[data-variant-thumb]');
+  const swatches = [...document.querySelectorAll<HTMLButtonElement>('[data-swatches] .swatch')];
+
+  if (thumb && swatches.length > 0) {
+    const images = [...thumb.querySelectorAll<HTMLElement>('[data-variant-index]')];
+
+    swatches.forEach((swatch) => {
+      swatch.addEventListener('click', () => {
+        const index = swatch.dataset.index;
+        images.forEach((image) => {
+          image.hidden = image.dataset.variantIndex !== index;
+        });
+        swatches.forEach((other) => {
+          other.setAttribute('aria-pressed', other === swatch ? 'true' : 'false');
+        });
+      });
+    });
+  }
 </script>
 
 <style>
@@ -148,9 +186,42 @@ const related = product.category
     }
   }
 
-  .product__media {
+  .product__media > .card {
     border: 3px solid var(--black);
     box-shadow: var(--shadow-hard);
+  }
+
+  .swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .swatch {
+    padding: 0.5em 1em;
+    min-height: 40px;
+    border: 3px solid var(--black);
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-title);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition:
+      background-color 0.1s ease,
+      color 0.1s ease;
+  }
+
+  .swatch:hover {
+    background: var(--grey-100);
+  }
+
+  .swatch[aria-pressed='true'] {
+    background: var(--black);
+    color: var(--white);
   }
 
   .product__category {

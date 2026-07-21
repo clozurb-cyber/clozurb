@@ -7,16 +7,38 @@ import { productImage } from '../lib/paths';
 type Props = {
   product: Product;
   eager?: boolean;
+  switchable?: boolean;
 };
 
-const { product, eager = false } = Astro.props;
-const asset = productImageAsset(product.image);
+const { product, eager = false, switchable = false } = Astro.props;
 const loading = eager ? 'eager' : 'lazy';
+
+const variants = switchable ? (product.variants ?? []) : [];
+const useVariants = variants.length > 0;
+const asset = productImageAsset(product.image);
 ---
 
-<div class="thumb">
+<div class="thumb" data-variant-thumb={useVariants ? '' : undefined}>
   {
-    asset ? (
+    useVariants ? (
+      variants.map((variant, index) => {
+        const variantAsset = productImageAsset(variant.image);
+        return variantAsset ? (
+          <Image
+            class="thumb__img"
+            data-variant-index={index}
+            src={variantAsset}
+            alt={`${product.name} (${variant.label})`}
+            widths={[240, 400, 800]}
+            sizes="(min-width: 45em) 50vw, 100vw"
+            format="webp"
+            loading={loading}
+            decoding="async"
+            hidden={index !== 0}
+          />
+        ) : null;
+      })
+    ) : asset ? (
       <Image
         class="thumb__img"
         src={asset}

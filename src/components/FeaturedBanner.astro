@@ -1,7 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import type { Product } from '../data/products';
 import { displayPrice } from '../data/products';
-import ProductThumb from './ProductThumb.astro';
+import { productImageAsset } from '../lib/images';
 import { productPath } from '../lib/paths';
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
 };
 
 const { product } = Astro.props;
+const coverAsset = productImageAsset(product.image);
 
 const sommaire = [
   'Dossier : où garer le camion ?',
@@ -20,7 +22,20 @@ const sommaire = [
 <section class="featured">
   <div class="page featured__inner">
     <a class="featured__cover" href={productPath(product.slug)} aria-label={product.name}>
-      <ProductThumb product={product} eager />
+      {
+        coverAsset && (
+          <Image
+            class="featured__cover-img"
+            src={coverAsset}
+            alt={product.name}
+            widths={[400, 600, 900]}
+            sizes="(min-width: 48em) 440px, 90vw"
+            format="webp"
+            loading="eager"
+            decoding="async"
+          />
+        )
+      }
     </a>
 
     <div class="featured__body">
@@ -77,15 +92,25 @@ const sommaire = [
 
   @media (min-width: 48em) {
     .featured__inner {
-      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 440px) minmax(0, 1fr);
     }
   }
 
   .featured__cover {
     display: block;
-    border: 3px solid var(--black);
-    box-shadow: var(--shadow-hard);
     text-decoration: none;
+  }
+
+  .featured__cover-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+  }
+
+  .featured__cover:hover .featured__cover-img {
+    transform: translateY(-4px) rotate(-1deg);
   }
 
   .featured__kicker {

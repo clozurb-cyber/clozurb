@@ -2,12 +2,18 @@ export const CATEGORIES = ['Prestations', 'Instruments', 'Tendance mode', 'Utile
 
 export type Category = (typeof CATEGORIES)[number];
 
+export type Variant = {
+  label: string;
+  image: string;
+};
+
 export type Product = {
   slug: string;
   name: string;
   price: number | null;
   priceLabel?: string;
   image: string | null;
+  variants?: Variant[];
   tagline: string;
   category?: Category;
   featured?: boolean;
@@ -16,9 +22,9 @@ export type Product = {
 export const products: readonly Product[] = [
   {
     slug: 'magazine-clozurb-1',
-    name: 'Le magazine Clozurb n°1',
+    name: 'Le magazine Clozurb n°20',
     price: 12,
-    image: null,
+    image: 'magazine-clozurb-1.png',
     featured: true,
     tagline: '48 pages sur un groupe qui aurait pu tenir en deux.',
   },
@@ -50,7 +56,7 @@ export const products: readonly Product[] = [
     slug: 'repete-chez-vous',
     name: 'Une répète chez vous',
     price: 1200,
-    image: null,
+    image: 'repete-chez-vous.png',
     category: 'Prestations',
     tagline: '70 personnes. Chez vous. Samedi.',
   },
@@ -58,7 +64,7 @@ export const products: readonly Product[] = [
     slug: 'break-de-fin',
     name: 'Le break de fin (MP3)',
     price: 8,
-    image: null,
+    image: 'break-de-fin.png',
     category: 'Prestations',
     tagline: 'Huit secondes. En boucle. Chez vous.',
   },
@@ -66,7 +72,7 @@ export const products: readonly Product[] = [
     slug: 'trois-minutes-silence',
     name: '3 minutes de silence',
     price: 9999,
-    image: null,
+    image: 'trois-minutes-silence.png',
     category: 'Prestations',
     tagline: 'Notre produit le plus rare. Stock : néant.',
   },
@@ -99,7 +105,11 @@ export const products: readonly Product[] = [
     slug: 'lunettes',
     name: 'Lunettes',
     price: 5.5,
-    image: 'lunettes.png',
+    image: 'lunettes-rouge.png',
+    variants: [
+      { label: 'Rouge', image: 'lunettes-rouge.png' },
+      { label: 'Noir', image: 'lunettes-noir.png' },
+    ],
     category: 'Tendance mode',
     tagline: 'Ne corrigent rien. Assument tout.',
   },
@@ -131,7 +141,11 @@ export const products: readonly Product[] = [
     slug: 'bonnet',
     name: 'Bonnet',
     price: 15.9,
-    image: 'bonnet.png',
+    image: 'bonnet-rouge.png',
+    variants: [
+      { label: 'Rouge', image: 'bonnet-rouge.png' },
+      { label: 'Noir', image: 'bonnet-noir.png' },
+    ],
     category: 'Tendance mode',
     tagline: 'Pour répéter dehors en janvier. Comme des gens raisonnables.',
   },
@@ -181,7 +195,11 @@ export const products: readonly Product[] = [
     slug: 'bracelet-eponge',
     name: 'Bracelet éponge',
     price: 21.9,
-    image: 'bracelet-eponge.png',
+    image: 'bracelet-eponge-rouge.png',
+    variants: [
+      { label: 'Rouge', image: 'bracelet-eponge-rouge.png' },
+      { label: 'Blanc', image: 'bracelet-eponge-blanc.png' },
+    ],
     category: 'Utile au quotidien',
     tagline: 'Absorbe la sueur du break final. Et vos larmes.',
   },
@@ -237,7 +255,7 @@ export const products: readonly Product[] = [
     slug: 'pichet-apres-presta',
     name: "Le pichet d'après-presta",
     price: 19,
-    image: null,
+    image: 'pichet-apres-presta.png',
     category: 'Utile au quotidien',
     tagline: 'La seule partie du répertoire maîtrisée par tous.',
   },
