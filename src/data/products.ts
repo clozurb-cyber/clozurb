@@ -1,4 +1,4 @@
-export const CATEGORIES = ['Instruments', 'Prestations', 'Tendance mode', 'Utile au quotidien'] as const;
+export const CATEGORIES = ['Prestations', 'Instruments', 'Tendance mode', 'Utile au quotidien'] as const;
 
 export type Category = (typeof CATEGORIES)[number];
 
@@ -9,10 +9,19 @@ export type Product = {
   priceLabel?: string;
   image: string | null;
   tagline: string;
-  category: Category;
+  category?: Category;
+  featured?: boolean;
 };
 
 export const products: readonly Product[] = [
+  {
+    slug: 'magazine-clozurb-1',
+    name: 'Le magazine Clozurb n°1',
+    price: 12,
+    image: null,
+    featured: true,
+    tagline: '48 pages sur un groupe qui aurait pu tenir en deux.',
+  },
   {
     slug: 'guimbarde-lettone',
     name: 'La guimbarde lettone',
@@ -52,14 +61,6 @@ export const products: readonly Product[] = [
     image: null,
     category: 'Prestations',
     tagline: 'Huit secondes. En boucle. Chez vous.',
-  },
-  {
-    slug: 'concerto-maracas',
-    name: 'Concerto pour maracas (CD-ROM gravé)',
-    price: 20,
-    image: null,
-    category: 'Prestations',
-    tagline: 'Sur CD-ROM. Prévoyez un ordinateur de 2003.',
   },
   {
     slug: 'trois-minutes-silence',
@@ -244,6 +245,11 @@ export const products: readonly Product[] = [
 
 export const findProduct = (slug: string): Product | undefined =>
   products.find((product) => product.slug === slug);
+
+export const featuredProduct = (): Product | undefined =>
+  products.find((product) => product.featured);
+
+export const catalogProducts = (): Product[] => products.filter((product) => !product.featured);
 
 export const formatPrice = (price: number): string =>
   new Intl.NumberFormat('fr-FR', {

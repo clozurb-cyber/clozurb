@@ -1,0 +1,176 @@
+---
+import type { Product } from '../data/products';
+import { displayPrice } from '../data/products';
+import ProductThumb from './ProductThumb.astro';
+import { productPath } from '../lib/paths';
+
+type Props = {
+  product: Product;
+};
+
+const { product } = Astro.props;
+
+const sommaire = [
+  'Dossier : où garer le camion ?',
+  'Portrait : le pupitre qui a toujours raison',
+  'Test comparatif : douze baguettes, une seule survivante',
+];
+---
+
+<section class="featured">
+  <div class="page featured__inner">
+    <a class="featured__cover" href={productPath(product.slug)} aria-label={product.name}>
+      <ProductThumb product={product} eager />
+    </a>
+
+    <div class="featured__body">
+      <p class="featured__kicker">À l'affiche</p>
+      <h2 class="featured__title">{product.name}</h2>
+      <p class="featured__lede">{product.tagline}</p>
+
+      <ul class="featured__sommaire">
+        {sommaire.map((line) => <li>{line}</li>)}
+      </ul>
+
+      <div class="featured__cta">
+        <button class="btn btn--accent" type="button" data-preorder data-slug={product.slug}>
+          Précommander · {displayPrice(product)}
+        </button>
+      </div>
+
+      <p class="featured__feedback" data-preorder-feedback role="status" aria-live="polite"></p>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { add } from '../scripts/cart';
+
+  const button = document.querySelector<HTMLButtonElement>('[data-preorder]');
+  const feedback = document.querySelector<HTMLElement>('[data-preorder-feedback]');
+  const slug = button?.dataset.slug;
+
+  button?.addEventListener('click', () => {
+    if (!slug) return;
+    add(slug);
+    if (feedback) {
+      feedback.textContent = 'Ajouté au panier. Vous serez parmi les premiers déçus.';
+      feedback.dataset.visible = '';
+    }
+  });
+</script>
+
+<style>
+  .featured {
+    background: var(--grey-100);
+    color: var(--black);
+    border-block: 3px solid var(--red);
+  }
+
+  .featured__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+    padding-block: clamp(2rem, 5vw, 3.25rem);
+  }
+
+  @media (min-width: 48em) {
+    .featured__inner {
+      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+    }
+  }
+
+  .featured__cover {
+    display: block;
+    border: 3px solid var(--black);
+    box-shadow: var(--shadow-hard);
+    text-decoration: none;
+  }
+
+  .featured__kicker {
+    display: inline-block;
+    margin: 0 0 1rem;
+    padding: 0.35em 0.7em;
+    background: var(--accent);
+    color: var(--black);
+    font-family: var(--font-title);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .featured__title {
+    margin: 0 0 0.9rem;
+    color: var(--black);
+    font-weight: 900;
+    font-size: clamp(1.75rem, 4vw, 2.6rem);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    margin-right: -0.02em;
+  }
+
+  .featured__lede {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--grey-800);
+    max-width: 48ch;
+  }
+
+  .featured__sommaire {
+    margin: 0 0 1.5rem;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .featured__sommaire li {
+    position: relative;
+    padding-left: 1.4em;
+    font-size: 0.9rem;
+    color: var(--grey-800);
+  }
+
+  .featured__sommaire li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .featured__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .featured__cta .btn {
+    min-height: 48px;
+  }
+
+  .featured__feedback {
+    margin: 1rem 0 0;
+    min-height: 1.2rem;
+    font-family: var(--font-title);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--black);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  .featured__feedback[data-visible] {
+    display: inline-block;
+    padding: 0.4em 0.7em;
+    background: var(--accent);
+    opacity: 1;
+  }
+</style>

@@ -1,7 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
 import ProductCard from '../components/ProductCard.astro';
-import { CATEGORIES, products } from '../data/products';
+import FeaturedBanner from '../components/FeaturedBanner.astro';
+import { CATEGORIES, catalogProducts, featuredProduct, products } from '../data/products';
+
+const featured = featuredProduct();
+const catalogCount = catalogProducts().length;
 
 const byCategory = CATEGORIES.map((category) => ({
   category,
@@ -22,11 +26,13 @@ const byCategory = CATEGORIES.map((category) => ({
           Instruments, accessoires, prestations et quelques articles plus difficiles à classer.
           Livraison assurée par nos propres moyens, c'est-à-dire à pied, en jouant.
         </p>
-        <a class="btn btn--accent" href="#catalogue">Voir les {products.length} produits</a>
+        <a class="btn btn--accent" href="#catalogue">Voir les {catalogCount} produits</a>
       </div>
     </div>
     <div class="hero__stripes stripes" aria-hidden="true"></div>
   </section>
+
+  {featured && <FeaturedBanner product={featured} />}
 
   <div class="page" id="catalogue">
     {

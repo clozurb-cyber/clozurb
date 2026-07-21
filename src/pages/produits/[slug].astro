@@ -17,9 +17,11 @@ type Props = {
 
 const { product } = Astro.props;
 
-const related = products
-  .filter((item) => item.category === product.category && item.slug !== product.slug)
-  .slice(0, 4);
+const related = product.category
+  ? products
+      .filter((item) => item.category === product.category && item.slug !== product.slug)
+      .slice(0, 4)
+  : [];
 ---
 
 <Base title={product.name} description={product.tagline}>
@@ -27,8 +29,14 @@ const related = products
     <nav class="crumbs" aria-label="Fil d'Ariane">
       <a href={path('/')}>Boutique</a>
       <span aria-hidden="true">/</span>
-      <a href={path('/#catalogue')}>{product.category}</a>
-      <span aria-hidden="true">/</span>
+      {
+        product.category && (
+          <>
+            <a href={path('/#catalogue')}>{product.category}</a>
+            <span aria-hidden="true">/</span>
+          </>
+        )
+      }
       <span aria-current="page">{product.name}</span>
     </nav>
 
@@ -38,7 +46,7 @@ const related = products
       </div>
 
       <div class="product__info">
-        <span class="product__category">{product.category}</span>
+        {product.category && <span class="product__category">{product.category}</span>}
         <h1 class="product__name">{product.name}</h1>
         <p class="product__tagline">{product.tagline}</p>
 
