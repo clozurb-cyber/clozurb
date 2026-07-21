@@ -42,7 +42,7 @@ export const products: readonly Product[] = [
     price: 4.5,
     image: 'kazoo.png',
     category: 'Instruments',
-    tagline: 'Zéro talent requis. Zéro talent développé.',
+    tagline: 'Instrument indispensable dans une batucada bolero.',
   },
   {
     slug: 'oeufs-choukai',
@@ -50,7 +50,7 @@ export const products: readonly Product[] = [
     price: 29,
     image: 'oeufs-choukai.png',
     category: 'Instruments',
-    tagline: 'Six œufs. Vous en perdrez cinq.',
+    tagline: 'Élevés en plein air.',
   },
   {
     slug: 'repete-chez-vous',
@@ -83,15 +83,15 @@ export const products: readonly Product[] = [
     priceLabel: 'Obtenir un devis',
     image: 'chorale-anniversaire.png',
     category: 'Prestations',
-    tagline: 'On débarque en chantant. Bon anniversaire quand même.',
+    tagline: 'Votre anniversaire. Notre calendrier.',
   },
   {
     slug: 'harnais-cuir',
     name: 'Harnais en cuir',
-    price: 55,
+    price: 495,
     image: 'harnais-cuir.png',
     category: 'Tendance mode',
-    tagline: 'Un surdo ne se porte pas. Il se soumet.',
+    tagline: 'Un surdo ne se porte pas. Il se soumet. Collier vendu séparément.',
   },
   {
     slug: 'cravate',
@@ -99,7 +99,7 @@ export const products: readonly Product[] = [
     price: 33.99,
     image: 'cravate.png',
     category: 'Tendance mode',
-    tagline: 'Se desserre dès le troisième morceau.',
+    tagline: "Pour donner l'impression que la presta avait un budget.",
   },
   {
     slug: 'lunettes',
@@ -111,7 +111,7 @@ export const products: readonly Product[] = [
       { label: 'Noir', image: 'lunettes-noir.png' },
     ],
     category: 'Tendance mode',
-    tagline: 'Ne corrigent rien. Assument tout.',
+    tagline: 'Une monture sérieuse pour des décisions qui le sont moins. Noir ou rouge.',
   },
   {
     slug: 'chemise',
@@ -147,7 +147,7 @@ export const products: readonly Product[] = [
       { label: 'Noir', image: 'bonnet-noir.png' },
     ],
     category: 'Tendance mode',
-    tagline: 'Pour répéter dehors en janvier. Comme des gens raisonnables.',
+    tagline: 'Protège du froid. Pas du ridicule. Noir ou rouge.',
   },
   {
     slug: 'doudou-dom',
@@ -180,7 +180,7 @@ export const products: readonly Product[] = [
     price: 10.9,
     image: 'metre-mesureur.png',
     category: 'Utile au quotidien',
-    tagline: "Mesure des choses. C'était tout le cahier des charges.",
+    tagline: "Pour mesurer précisément ce qui n'allait déjà pas.",
   },
   {
     slug: 'bugatti',
@@ -189,7 +189,7 @@ export const products: readonly Product[] = [
     priceLabel: 'Prix sur demande',
     image: 'bugatti.png',
     category: 'Utile au quotidien',
-    tagline: "Le camion était complet. On a pris ça.",
+    tagline: 'Quatre roues. Toujours aucune place pour les surdos.',
   },
   {
     slug: 'bracelet-eponge',
@@ -201,7 +201,7 @@ export const products: readonly Product[] = [
       { label: 'Blanc', image: 'bracelet-eponge-blanc.png' },
     ],
     category: 'Utile au quotidien',
-    tagline: 'Absorbe la sueur du break final. Et vos larmes.',
+    tagline: 'Absorbe la sueur du break final. Et vos larmes. Rouge ou blanc.',
   },
   {
     slug: 'porte-cles-camion',
@@ -217,7 +217,7 @@ export const products: readonly Product[] = [
     price: 5.6,
     image: 'niveau-poche-pliant.png',
     category: 'Utile au quotidien',
-    tagline: 'Confirme ce que vous saviez : la scène penche.',
+    tagline: "Prouve scientifiquement que ce n'est pas vous qui penchez.",
   },
   {
     slug: 'brise-glace',
@@ -257,7 +257,7 @@ export const products: readonly Product[] = [
     price: 19,
     image: 'pichet-apres-presta.png',
     category: 'Utile au quotidien',
-    tagline: 'La seule partie du répertoire maîtrisée par tous.',
+    tagline: 'La seule partie du répertoire maîtrisée par tous. Cinq minimum.',
   },
 ];
 
