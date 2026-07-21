@@ -1,6 +1,6 @@
 ---
 import type { Product } from '../data/products';
-import { formatPrice } from '../data/products';
+import { displayPrice } from '../data/products';
 import { productPath } from '../lib/paths';
 import ProductThumb from './ProductThumb.astro';
 
@@ -21,7 +21,7 @@ const { product } = Astro.props;
       <p class="card__tagline">{product.tagline}</p>
 
       <div class="card__footer">
-        <span class="price">{formatPrice(product.price)}</span>
+        <span class="price">{displayPrice(product)}</span>
         <span class="card__cta">Voir</span>
       </div>
     </div>

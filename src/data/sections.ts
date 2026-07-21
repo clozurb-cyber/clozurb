@@ -1,12 +1,15 @@
 export const SECTIONS = [
-  'Surdo',
+  'Danse',
+  'Agogo',
+  'Campana',
+  'Chocalho',
+  'Tambourim',
   'Caisse claire',
-  'Repique',
-  'Tamborim',
-  'Chocalho / Ganza',
-  'Agogô',
-  'Timbal',
-  'Danseur / Danseuse',
+  'Repenic',
+  'Couper',
+  'Contra',
+  'Surdo',
+  'Artiste',
 ] as const;
 
 export const SECTION_OTHER = 'autre';

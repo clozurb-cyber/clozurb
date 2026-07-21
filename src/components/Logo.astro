@@ -1,14 +1,15 @@
 ---
 type Props = {
   size?: string;
+  text?: string;
 };
 
-const { size = '1.5rem' } = Astro.props;
+const { size = '1.5rem', text = 'les zurbamateurs' } = Astro.props;
 ---
 
 <span class="logo" style={`--logo-size: ${size}`}>
   <span class="logo__stripes" aria-hidden="true"></span>
-  <span class="logo__text">les zurbamateurs<span class="logo__caret">_</span></span>
+  <span class="logo__text">{text}<span class="logo__caret">_</span></span>
 </span>
 
 <style>

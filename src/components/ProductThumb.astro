@@ -46,16 +46,32 @@ const loading = eager ? 'eager' : 'lazy';
     position: relative;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    background: var(--black);
+    background: radial-gradient(circle at 50% 42%, #911a29 0%, #0a0000 80%);
     border-bottom: 3px solid var(--black);
   }
 
+  .thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(circle at 50% 42%, #9e1a2b 0%, #0a0000 80%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
   .thumb__img {
+    position: relative;
+    z-index: 1;
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
     transition: transform 0.35s ease;
+  }
+
+  :global(.card:hover) .thumb::before {
+    opacity: 1;
   }
 
   :global(.card:hover) .thumb__img {

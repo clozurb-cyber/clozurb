@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import ProductThumb from '../../components/ProductThumb.astro';
 import ProductCard from '../../components/ProductCard.astro';
-import { formatPrice, products, type Product } from '../../data/products';
+import { displayPrice, products, type Product } from '../../data/products';
 import { path } from '../../lib/paths';
 
 export const getStaticPaths = () =>
@@ -42,7 +42,7 @@ const related = products
         <h1 class="product__name">{product.name}</h1>
         <p class="product__tagline">{product.tagline}</p>
 
-        <p class="product__price"><span class="price">{formatPrice(product.price)}</span></p>
+        <p class="product__price"><span class="price">{displayPrice(product)}</span></p>
 
         <p class="product__stock">
           <span class="product__dot" aria-hidden="true"></span>

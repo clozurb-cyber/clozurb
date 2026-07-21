@@ -90,7 +90,7 @@ for (const product of products) {
 
 <script>
   import { clear, read, subscribe, setQuantity, remove, type CartLine } from '../scripts/cart';
-  import { findProduct, formatPrice, type Product } from '../data/products';
+  import { findProduct, formatPrice, displayPrice, type Product } from '../data/products';
   import { newOrderId, submitOrder, type OrderLine } from '../scripts/order';
   import { SECTION_OTHER } from '../data/sections';
   import { productPath } from '../lib/paths';
@@ -143,7 +143,7 @@ for (const product of products) {
 
     const price = document.createElement('span');
     price.className = 'line__price';
-    price.textContent = formatPrice(product.price);
+    price.textContent = displayPrice(product);
 
     body.append(name, price);
 
@@ -178,7 +178,7 @@ for (const product of products) {
 
     list.replaceChildren(...resolved.map(renderLine));
 
-    const total = resolved.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
+    const total = resolved.reduce((sum, line) => sum + (line.product.price ?? 0) * line.quantity, 0);
     totalEl.textContent = formatPrice(total);
   };
 
